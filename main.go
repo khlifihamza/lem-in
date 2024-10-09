@@ -2,25 +2,30 @@ package main
 
 import (
 	"fmt"
+
 	"lem-in/functions"
 )
 
 func main() {
-	g, lines, err := functions.ParseInput()
+	graph, text, Start, End, NumberOfAnts, err := functions.Parser()
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	maxFlow := functions.EdmondsKarp(g)
-	paths := functions.FindPaths(g, maxFlow)
-	if len(paths) == 0 {
-		fmt.Println("ERROR: no valid path from start to end")
-		return
-	}
-	for _, line := range lines {
+	for _, line := range text {
 		fmt.Println(line)
 	}
 	fmt.Println()
-	paths = g.Sort(paths)
-	functions.SimulateAntMovement(g, paths)
+	Colony := *functions.NewColony(graph, Start, End, NumberOfAnts)
+	shortestPaths := [][]string{}
+	for _, vertex := range graph.GetVertex(Start).Adjacent {
+		shortestPaths = append(shortestPaths, graph.GetShortPath(vertex.Key, End, Start))
+	}
+	shortestPaths = functions.Sort(shortestPaths)
+	shortestPaths = graph.CheckShortestPaths(shortestPaths, Start, End)
+	shortestPaths = functions.CleanDuplicatedPaths(shortestPaths)
+	pathCombinations := graph.GetPathCombinations(shortestPaths, &Colony)
+	pathCombinations = functions.CleanDuplicatedCombinations(pathCombinations, &Colony)
+	movements := functions.DeployAntArmy(pathCombinations, &Colony)
+	functions.PrintMovements(movements)
 }
