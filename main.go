@@ -6,6 +6,8 @@ import (
 	"lem-in/functions"
 )
 
+// This function parses a graph, start and end points, number of ants, and handles any errors. 
+// It prints the initial data and then initializes a Colony structure, retrieves the shortest paths from the graph, sorts them, cleans duplicates, generates path combinations, deploys the ants, and finally prints the movement of the ant army.
 func main() {
 	graph, text, Start, End, NumberOfAnts, err := functions.Parser()
 	if err != nil {

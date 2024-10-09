@@ -5,6 +5,8 @@ import (
 	"sort"
 )
 
+// CleanDuplicatedPaths removes shorter paths from the shortestPaths slice if they start at the same vertex
+// as a longer path, ensuring only the longest unique paths are retained.
 func CleanDuplicatedPaths(shortestPaths [][]string) [][]string {
 	for i := 0; i < len(shortestPaths); i++ {
 		for j := i + 1; j < len(shortestPaths); j++ {
@@ -17,6 +19,8 @@ func CleanDuplicatedPaths(shortestPaths [][]string) [][]string {
 	return shortestPaths
 }
 
+// CleanDuplicatedCombinations filters out duplicate path combinations from the pathCombinations map,
+// keeping only unique combinations based on their string representation after sorting them by starting vertex adjacency.
 func CleanDuplicatedCombinations(pathCombinations map[int][][]string, Colony *Colony) map[int][][]string {
 	for key, pathCombination := range pathCombinations {
 		pathCombinations[key] = SortByStartAdjacent(Colony, pathCombination)
@@ -35,6 +39,8 @@ func CleanDuplicatedCombinations(pathCombinations map[int][][]string, Colony *Co
 	return newPathCombinations
 }
 
+// SortByStartAdjacent sorts the given paths based on the adjacency of their starting vertex to the start of the colony,
+// prioritizing paths that lead to adjacent rooms and maintaining stable sorting for paths of equal length.
 func SortByStartAdjacent(Colony *Colony, paths [][]string) [][]string {
 	adjacentOrder := make(map[string]int)
 	for i, neighbor := range Colony.Graph.GetVertex(Colony.Start).Adjacent {
@@ -60,6 +66,8 @@ func SortByStartAdjacent(Colony *Colony, paths [][]string) [][]string {
 	return paths
 }
 
+// calculatePathLimits determines how many ants can be allocated to each path based on their lengths and the total ant count,
+// ensuring that shorter paths receive more ants first until all ants are allocated or no more paths can be filled.
 func calculatePathLimits(paths [][]string, antCount int) []int {
 	limits := make([]int, len(paths))
 	remainingAnts := antCount

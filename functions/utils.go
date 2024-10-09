@@ -11,6 +11,7 @@ import (
 	"lem-in/entities"
 )
 
+// Contains checks if a given key exists in a slice of Vertex pointers and returns true if found, otherwise false.
 func Contains(slice []*entities.Vertex, key string) bool {
 	for _, vertex := range slice {
 		if key == vertex.Key {
@@ -20,6 +21,7 @@ func Contains(slice []*entities.Vertex, key string) bool {
 	return false
 }
 
+// RemoveFromSlice removes a specified vertex from a slice of Vertex pointers and returns the updated slice.
 func RemoveFromSlice(slice []*entities.Vertex, vertex *entities.Vertex) []*entities.Vertex {
 	for i, v := range slice {
 		if v == vertex {
@@ -29,6 +31,7 @@ func RemoveFromSlice(slice []*entities.Vertex, vertex *entities.Vertex) []*entit
 	return slice
 }
 
+// ContainsInslice checks if a given key exists in a slice of strings and returns true if found, otherwise false.
 func ContainsInslice(slice []string, key string) bool {
 	for _, vertex := range slice {
 		if key == vertex {
@@ -38,6 +41,7 @@ func ContainsInslice(slice []string, key string) bool {
 	return false
 }
 
+// DeleteInSlice removes the slice at the specified index from the 2D slice shortestPaths and returns the new slice.
 func DeleteInSlice(shortestPaths [][]string, index int) [][]string {
 	newSlice := [][]string{}
 	for i, slice := range shortestPaths {
@@ -48,6 +52,7 @@ func DeleteInSlice(shortestPaths [][]string, index int) [][]string {
 	return newSlice
 }
 
+// Sort orders the 2D slice paths based on the length of each inner slice, arranging them in ascending order.
 func Sort(paths [][]string) [][]string {
 	sort.Slice(paths, func(i, j int) bool {
 		return len(paths[i]) < len(paths[j])
@@ -55,6 +60,7 @@ func Sort(paths [][]string) [][]string {
 	return paths
 }
 
+// GetNumberOfSteps calculates the total number of steps by summing the lengths of each inner slice in the 2D slice result.
 func GetNumberOfSteps(result [][]string) int {
 	c := 0
 	for _, slice := range result {
@@ -63,6 +69,7 @@ func GetNumberOfSteps(result [][]string) int {
 	return c
 }
 
+// PrintMovements prints the movements in a formatted way, separating each step with a space and adding a newline after each movement.
 func PrintMovements(movements [][]string) {
 	for _, movement := range movements {
 		for i, step := range movement {
@@ -75,6 +82,7 @@ func PrintMovements(movements [][]string) {
 	}
 }
 
+// CompareAllResults compares multiple results to find the index of the one with the least turns and steps.
 func CompareAllResults(allResults map[int][][]string) int {
 	index := 0
 	minTurns := len(allResults[0])
@@ -97,6 +105,9 @@ func CompareAllResults(allResults map[int][][]string) int {
 	return index
 }
 
+// Parser reads input from a file and constructs a graph representation of rooms and tunnels.
+// It returns a network of rooms, the lines read from the file, the start room,
+// the end room, the number of ants, and any error encountered during parsing.
 func Parser() (*Network, []string, string, string, int, error) {
 	args := os.Args[1:]
 	if len(args) != 1 {

@@ -6,6 +6,10 @@ import (
 	"lem-in/entities"
 )
 
+// DeployAntInCombination function manages the movement of ants through various paths.
+// It initializes ants with ID, position, and path, and handles their movement until all ants reach the end.
+// The function checks if a room is occupied, moves ants step by step, and updates their positions.
+// It collects and returns the movements of ants as they proceed through their respective paths.
 func DeployAntInCombination(Colony *Colony, paths [][]string) [][]string {
 	var ants []*entities.Ant
 	results := [][]string{}
@@ -59,6 +63,9 @@ func DeployAntInCombination(Colony *Colony, paths [][]string) [][]string {
 	return results
 }
 
+// DeployAntArmy function manages the deployment of an ant army across different path combinations.
+// It prepares each path by appending the start room, sorts the paths, and then uses DeployAntInCombination to handle the actual movement.
+// After all paths are processed, the function compares the results and returns the best solution for the ant deployment.
 func DeployAntArmy(pathCombinations map[int][][]string, Colony *Colony) [][]string {
 	allResults := map[int][][]string{}
 	for key, pathpathCombination := range pathCombinations {
