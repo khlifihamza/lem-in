@@ -160,7 +160,7 @@ func Parser() (*Network, []string, string, string, int, error) {
 					return nil, nil, "", "", 0, err
 				}
 			}
-		} else if line[1] != '#' {
+		} else if line[0] != '#' {
 			return nil, nil, "", "", 0, fmt.Errorf("ERROR: invalid data format, room shouldn't start with L or #: %s", line)
 		}
 	}
