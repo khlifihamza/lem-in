@@ -162,8 +162,11 @@ func Parser() (*Network, []string, string, string, int, error) {
 				}
 			} else if strings.Contains(line, "-") {
 				edge := strings.Split(line, "-")
-				if len(edge) != 2 || edge[0] == edge[1] {
+				if len(edge) != 2 {
 					return nil, nil, "", "", 0, fmt.Errorf("ERROR: invalid data format, invalid tunnel format: %s", line)
+				}
+				if edge[0] == edge[1] {
+					return nil, nil, "", "", 0, fmt.Errorf("ERROR: invalid data format, Circular tunnel not allowed: %s", line)
 				}
 				err := graph.AddEdge(edge[0], edge[1])
 				if err != nil {
