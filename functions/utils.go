@@ -137,7 +137,9 @@ func Parser() (*Network, []string, string, string, int, error) {
 	graph := &Network{}
 	var Start, End string
 	for i, line := range text {
-		if line[0] != '#' && line[0] != 'L' {
+		if len(line) == 0 {
+			return nil, nil, "", "", 0, fmt.Errorf("ERROR: invalid data format, invalid line format")
+		} else if line[0] != '#' && line[0] != 'L' {
 			if strings.Contains(line, " ") {
 				room := strings.Split(line, " ")
 				if len(room) != 3 {
@@ -172,6 +174,8 @@ func Parser() (*Network, []string, string, string, int, error) {
 				if err != nil {
 					return nil, nil, "", "", 0, err
 				}
+			}else if i > 0 && !strings.Contains(line, "-") && !strings.Contains(line, " "){
+				return nil, nil, "", "", 0, fmt.Errorf("ERROR: invalid data format, invalid line format: %s", line)
 			}
 		} else if line[0] != '#' {
 			return nil, nil, "", "", 0, fmt.Errorf("ERROR: invalid data format, room shouldn't start with L or #: %s", line)
