@@ -174,7 +174,7 @@ func Parser() (*Network, []string, string, string, int, error) {
 				if err != nil {
 					return nil, nil, "", "", 0, err
 				}
-			}else if i > 0 && !strings.Contains(line, "-") && !strings.Contains(line, " "){
+			} else if i > 0 && !strings.Contains(line, "-") && !strings.Contains(line, " ") {
 				return nil, nil, "", "", 0, fmt.Errorf("ERROR: invalid data format, invalid line format: %s", line)
 			}
 		} else if line[0] != '#' {
@@ -188,4 +188,14 @@ func Parser() (*Network, []string, string, string, int, error) {
 		return nil, nil, "", "", 0, fmt.Errorf("ERROR: invalid data format, missing end room")
 	}
 	return graph, text, Start, End, NumberOfAnts, nil
+}
+
+func CheckShortestPaths(shortestPaths [][]string) [][]string {
+	newShortestPaths := [][]string{}
+	for _, slice := range shortestPaths {
+		if len(slice) > 0 {
+			newShortestPaths = append(newShortestPaths, slice)
+		}
+	}
+	return newShortestPaths
 }
