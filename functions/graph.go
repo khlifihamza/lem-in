@@ -102,7 +102,7 @@ func (g *Network) GetShortPath(start, end, source string) []string {
 	return []string{}
 }
 
-// CheckShortestPaths verifies and modifies the provided shortest paths by removing edges 
+// CheckShortestPaths verifies and modifies the provided shortest paths by removing edges
 // between certain rooms and generating new shortest paths, ensuring paths do not return to the source.
 func (g *Network) CheckShortestPaths(shortestPaths [][]string, source, end string) [][]string {
 	newShortestPaths := [][]string{}
@@ -113,6 +113,7 @@ func (g *Network) CheckShortestPaths(shortestPaths [][]string, source, end strin
 					if len(g.GetVertex(shortPshortestPath[j-1]).Adjacent) > 2 {
 						g.RemoveEdge(g.GetVertex(shortPshortestPath[j-1]), g.GetVertex(room))
 						newShortestPaths = append(newShortestPaths, g.GetShortPath(shortPshortestPath[0], end, source))
+						g.AddEdge(shortPshortestPath[j-1], room)
 						break
 					}
 				}

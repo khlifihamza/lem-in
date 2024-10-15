@@ -89,6 +89,5 @@ func calculatePathLimits(paths [][]string, antCount int) []int {
 			break
 		}
 	}
-
 	return limits
 }

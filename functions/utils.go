@@ -149,7 +149,6 @@ func Parser() (*Network, []string, string, string, int, error) {
 				}
 				_, err = strconv.Atoi(room[2])
 				if err != nil {
-					fmt.Println("ERROR: invalid data format, invalid room coordinates: " + line)
 					return nil, nil, "", "", 0, fmt.Errorf("ERROR: invalid data format, invalid room coordinates: %s", line)
 				}
 				err = graph.AddVertex(room[0])
@@ -163,7 +162,7 @@ func Parser() (*Network, []string, string, string, int, error) {
 				}
 			} else if strings.Contains(line, "-") {
 				edge := strings.Split(line, "-")
-				if len(edge) != 2 {
+				if len(edge) != 2 || edge[0] == edge[1] {
 					return nil, nil, "", "", 0, fmt.Errorf("ERROR: invalid data format, invalid tunnel format: %s", line)
 				}
 				err := graph.AddEdge(edge[0], edge[1])
