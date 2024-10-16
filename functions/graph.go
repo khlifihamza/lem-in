@@ -76,7 +76,7 @@ func (g *Network) RemoveEdge(from, to *entities.Vertex) {
 
 // GetShortPath finds the shortest path from the start vertex to the end vertex in the network,
 // avoiding the source vertex, and returns the path as a slice of strings.
-func (g *Network) GetShortPath(start, end, source string) []string {
+func (g *Network) GetShortPath(start, end, source string) ([]string, error) {
 	queue := [][]string{{start}}
 	visited := make(map[string]bool)
 	visited[start] = true
@@ -85,7 +85,7 @@ func (g *Network) GetShortPath(start, end, source string) []string {
 		queue = queue[1:]
 		node := path[len(path)-1]
 		if node == end {
-			return path
+			return path, nil
 		}
 		for _, neighbor := range g.GetVertex(node).Adjacent {
 			if neighbor.Key == source {
@@ -99,7 +99,7 @@ func (g *Network) GetShortPath(start, end, source string) []string {
 			}
 		}
 	}
-	return []string{}
+	return []string{}, fmt.Errorf("ERROR: invalid data format, There's no path between start and end")
 }
 
 // CheckShortestPaths verifies and modifies the provided shortest paths by removing edges
@@ -112,7 +112,8 @@ func (g *Network) CheckShortestPaths(shortestPaths [][]string, source, end strin
 				if j > 0 && ContainsInslice(shortestPaths[0], room) && room != end {
 					if len(g.GetVertex(shortPshortestPath[j-1]).Adjacent) > 2 {
 						g.RemoveEdge(g.GetVertex(shortPshortestPath[j-1]), g.GetVertex(room))
-						newShortestPaths = append(newShortestPaths, g.GetShortPath(shortPshortestPath[0], end, source))
+						path, _ := g.GetShortPath(shortPshortestPath[0], end, source)
+						newShortestPaths = append(newShortestPaths, path)
 						g.AddEdge(shortPshortestPath[j-1], room)
 						break
 					}

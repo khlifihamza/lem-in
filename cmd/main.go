@@ -17,12 +17,12 @@ func main() {
 	Colony := *functions.NewColony(graph, Start, End, NumberOfAnts)
 	shortestPaths := [][]string{}
 	for _, vertex := range graph.GetVertex(Start).Adjacent {
-		shortestPaths = append(shortestPaths, graph.GetShortPath(vertex.Key, End, Start))
-	}
-	shortestPaths = functions.CheckShortestPaths(shortestPaths)
-	if len(shortestPaths) == 0 {
-		fmt.Println("ERROR: invalid data format, There's no path between start and end")
-		return
+		path, err := graph.GetShortPath(vertex.Key, End, Start)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		shortestPaths = append(shortestPaths, path)
 	}
 	for _, line := range text {
 		fmt.Println(line)

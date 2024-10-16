@@ -189,13 +189,3 @@ func Parser() (*Network, []string, string, string, int, error) {
 	}
 	return graph, text, Start, End, NumberOfAnts, nil
 }
-
-func CheckShortestPaths(shortestPaths [][]string) [][]string {
-	newShortestPaths := [][]string{}
-	for _, slice := range shortestPaths {
-		if len(slice) > 0 {
-			newShortestPaths = append(newShortestPaths, slice)
-		}
-	}
-	return newShortestPaths
-}
