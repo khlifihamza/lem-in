@@ -16,13 +16,18 @@ func main() {
 	}
 	Colony := *functions.NewColony(graph, Start, End, NumberOfAnts)
 	shortestPaths := [][]string{}
+	errors := []string{}
 	for _, vertex := range graph.GetVertex(Start).Adjacent {
 		path, err := graph.GetShortPath(vertex.Key, End, Start)
 		if err != nil {
-			fmt.Println(err)
-			return
+			errors = append(errors, err.Error())
+			continue
 		}
 		shortestPaths = append(shortestPaths, path)
+	}
+	if len(errors) == len(graph.GetVertex(Start).Adjacent) {
+		fmt.Println(errors[0])
+		return
 	}
 	for _, line := range text {
 		fmt.Println(line)
