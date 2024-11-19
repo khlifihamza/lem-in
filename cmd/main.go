@@ -35,9 +35,11 @@ func main() {
 	fmt.Println()
 	shortestPaths = functions.Sort(shortestPaths)
 	shortestPaths = graph.CheckShortestPaths(shortestPaths, Start, End)
-	shortestPaths = functions.CleanDuplicatedPaths(shortestPaths)
 	pathCombinations := graph.GetPathCombinations(shortestPaths, &Colony)
 	pathCombinations = functions.CleanDuplicatedCombinations(pathCombinations, &Colony)
+	// for _, comb := range pathCombinations {
+	// 	fmt.Println(comb)
+	// }
 	movements := functions.DeployAntArmy(pathCombinations, &Colony)
 	functions.PrintMovements(movements)
 }

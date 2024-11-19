@@ -5,20 +5,6 @@ import (
 	"sort"
 )
 
-// CleanDuplicatedPaths removes shorter paths from the shortestPaths slice if they start at the same vertex
-// as a longer path, ensuring only the longest unique paths are retained.
-func CleanDuplicatedPaths(shortestPaths [][]string) [][]string {
-	for i := 0; i < len(shortestPaths); i++ {
-		for j := i + 1; j < len(shortestPaths); j++ {
-			if shortestPaths[i][0] == shortestPaths[j][0] && len(shortestPaths[i]) < len(shortestPaths[j]) {
-				shortestPaths = DeleteInSlice(shortestPaths, i)
-				i--
-			}
-		}
-	}
-	return shortestPaths
-}
-
 // CleanDuplicatedCombinations filters out duplicate path combinations from the pathCombinations map,
 // keeping only unique combinations based on their string representation after sorting them by starting vertex adjacency.
 func CleanDuplicatedCombinations(pathCombinations map[int][][]string, Colony *Colony) map[int][][]string {
