@@ -58,7 +58,6 @@ func calculatePathLimits(paths [][]string, antCount int) []int {
 	limits := make([]int, len(paths))
 	remainingAnts := antCount
 	for {
-		pathsUsed := 0
 		for i := range paths {
 			if remainingAnts == 0 {
 				return limits
@@ -66,14 +65,9 @@ func calculatePathLimits(paths [][]string, antCount int) []int {
 			if i == 0 || len(paths[i])+limits[i] < len(paths[i-1])+limits[i-1] {
 				limits[i]++
 				remainingAnts--
-				pathsUsed++
 			} else {
 				break
 			}
 		}
-		if pathsUsed == 0 {
-			break
-		}
 	}
-	return limits
 }
