@@ -109,6 +109,8 @@ func CompareAllResults(allResults map[int][][]string) int {
 // It returns a network of rooms, the lines read from the file, the start room,
 // the end room, the number of ants, and any error encountered during parsing.
 func Parser() (*Network, []string, string, string, int, error) {
+	startFound := false
+	endFound := false
 	args := os.Args[1:]
 	if len(args) != 1 {
 		return nil, nil, "", "", 0, fmt.Errorf("ERROR: invalid data format, expected one argument (file name)")
@@ -158,9 +160,17 @@ func Parser() (*Network, []string, string, string, int, error) {
 					return nil, nil, "", "", 0, err
 				}
 				if i > 0 && text[i-1] == "##start" {
+					if startFound {
+						return nil, nil, "", "", 0, fmt.Errorf("ERROR: invalid data format, multiple ##start detected at line: %s", line)
+					}
 					Start = room[0]
+					startFound = true
 				} else if i > 0 && text[i-1] == "##end" {
+					if endFound {
+						return nil, nil, "", "", 0, fmt.Errorf("ERROR: invalid data format, multiple ##end detected at line: %s", line)
+					}
 					End = room[0]
+					endFound = true
 				}
 			} else if strings.Contains(line, "-") {
 				edge := strings.Split(line, "-")
