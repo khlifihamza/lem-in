@@ -10,14 +10,13 @@ import (
 // It initializes ants with ID, position, and path, and handles their movement until all ants reach the end.
 // The function checks if a room is occupied, moves ants step by step, and updates their positions.
 // It collects and returns the movements of ants as they proceed through their respective paths.
-func DeployAntInCombination(Colony *Colony, paths [][]string) [][]string {
+func DeployAntInCombination(Colony *Colony, paths [][]string,pathLimits []int) [][]string {
 	var ants []*entities.Ant
 	results := [][]string{}
 	for i := 1; i <= Colony.NumberOfAnts; i++ {
 		ants = append(ants, &entities.Ant{Id: i, PathIndex: -1, Position: -1, Finished: false})
 	}
 	finished := 0
-	pathLimits := calculatePathLimits(paths, Colony.NumberOfAnts)
 	for finished < Colony.NumberOfAnts {
 		// fmt.Println(pathLimits)
 		movements := []string{}
@@ -67,18 +66,33 @@ func DeployAntInCombination(Colony *Colony, paths [][]string) [][]string {
 // It prepares each path by appending the start room, sorts the paths, and then uses DeployAntInCombination to handle the actual movement.
 // After all paths are processed, the function compares the results and returns the best solution for the ant deployment.
 func DeployAntArmy(pathCombinations map[int][][]string, Colony *Colony) [][]string {
-	allResults := map[int][][]string{}
-	for key, pathpathCombination := range pathCombinations {
-		for i, path := range pathpathCombination {
-			newPath := []string{Colony.Start}
-			newPath = append(newPath, path...)
-			pathpathCombination[i] = newPath
-		}
-		pathpathCombination = Sort(pathpathCombination)
-		// fmt.Println(pathpathCombination)
-		allResults[key] = DeployAntInCombination(Colony, pathpathCombination)
+	pathLimits := map[int][]int{}
+	index := 0
+	minSteps := 0
+	for key, pathCombination := range pathCombinations {
+		pathLimits[key] = calculatePathLimits(pathCombination, Colony.NumberOfAnts)
 	}
-	index := CompareAllResults(allResults)
-	// fmt.Println(pathCombinations[index])
-	return allResults[index]
+	minTurns := pathLimits[0][0] + len(pathCombinations[0][0]) - 1
+	minSteps = GetNumberOfSteps(pathLimits[0], pathCombinations[0])
+	for i, pathCombination := range pathCombinations {
+		if pathLimits[i][0]+len(pathCombination[0])-1 == minTurns {
+			checkMinSteps := GetNumberOfSteps(pathLimits[i], pathCombination)
+			if minSteps > checkMinSteps {
+				minSteps = checkMinSteps
+				index = i
+			}
+		} else if pathLimits[i][0]+len(pathCombination[0])-1 < minTurns {
+			minTurns = pathLimits[i][0] + len(pathCombination[0]) - 1
+			minSteps = GetNumberOfSteps(pathLimits[i], pathCombination)
+			index = i
+		}
+	}
+	//fmt.Println(pathLimits)
+	for i, path := range pathCombinations[index] {
+		newPath := []string{Colony.Start}
+		newPath = append(newPath, path...)
+		pathCombinations[index][i] = newPath
+	}
+	result := DeployAntInCombination(Colony,pathCombinations[index],pathLimits[index])
+	return result
 }

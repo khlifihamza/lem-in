@@ -61,12 +61,12 @@ func Sort(paths [][]string) [][]string {
 }
 
 // GetNumberOfSteps calculates the total number of steps by summing the lengths of each inner slice in the 2D slice result.
-func GetNumberOfSteps(result [][]string) int {
-	c := 0
-	for _, slice := range result {
-		c += len(slice)
+func GetNumberOfSteps(pathLimits []int,pathCombinations [][]string) int {
+	minSteps := 0
+	for i, limit := range pathLimits {
+		minSteps += limit * len(pathCombinations[i])
 	}
-	return c
+	return minSteps
 }
 
 // PrintMovements prints the movements in a formatted way, separating each step with a space and adding a newline after each movement.
@@ -80,29 +80,6 @@ func PrintMovements(movements [][]string) {
 		}
 		fmt.Println()
 	}
-}
-
-// CompareAllResults compares multiple results to find the index of the one with the least turns and steps.
-func CompareAllResults(allResults map[int][][]string) int {
-	index := 0
-	minTurns := len(allResults[0])
-	minSteps := GetNumberOfSteps(allResults[0])
-	for i := 0; i < len(allResults); i++ {
-		if len(allResults[i]) == minTurns && len(allResults[i]) > 0 {
-			if minSteps > GetNumberOfSteps(allResults[i]) {
-				minTurns = len(allResults[i])
-				minSteps = GetNumberOfSteps(allResults[i])
-				index = i
-			}
-		} else if len(allResults[i]) < minTurns && len(allResults[i]) > 0 {
-			minTurns = len(allResults[i])
-			minSteps = GetNumberOfSteps(allResults[i])
-			index = i
-		}
-		// fmt.Printf("turns : %d   steps : %d\n", len(allResults[i]), GetNumberOfSteps(allResults[i]))
-	}
-	// fmt.Println()
-	return index
 }
 
 // Parser reads input from a file and constructs a graph representation of rooms and tunnels.

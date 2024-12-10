@@ -2,6 +2,7 @@ package functions
 
 import (
 	"fmt"
+	"slices"
 	"sort"
 )
 
@@ -10,6 +11,7 @@ import (
 func CleanDuplicatedCombinations(pathCombinations map[int][][]string, Colony *Colony) map[int][][]string {
 	for key, pathCombination := range pathCombinations {
 		pathCombinations[key] = SortByStartAdjacent(Colony, pathCombination)
+		pathCombinations[key] = slices.CompactFunc(pathCombination, slices.Equal)
 	}
 	uniqueCombinations := make(map[string][][]string)
 	for _, combination := range pathCombinations {
