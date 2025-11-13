@@ -73,6 +73,25 @@ L1-0 L2-6 L3-4
 L2-0 L3-0
 ```
 
+### Visualization: Data Flow
+
+```mermaid
+graph LR
+    A[Input File] --> B[Parser]
+    B --> C[Graph/Network]
+    B --> D[Colony Data]
+    C --> E[Pathfinding]
+    D --> E
+    E --> F[Path Combinations]
+    F --> G[Combination Cleaning]
+    G --> H[Path Selection]
+    H --> I[Ant Deployment]
+    I --> J[Movement Output]
+    
+    style A fill:#ffffcc
+    style J fill:#ccffcc
+```
+
 ## Error Handling
 
 The program must handle errors gracefully and output the following error message when applicable:
@@ -119,6 +138,31 @@ L2-1 L3-3
 L3-1
 ```
 
+### Visualization: Main Program Flow
+
+```mermaid
+flowchart TD
+    A[Start: main.go] --> B[Parse Input File]
+    B --> C{Parsing Successful?}
+    C -->|No| D[Print Error & Exit]
+    C -->|Yes| E[Create Colony]
+    E --> F[Find Shortest Paths from Start]
+    F --> G{Valid Paths Found?}
+    G -->|No| H[Print Error & Exit]
+    G -->|Yes| I[Sort Paths by Length]
+    I --> J[Check & Adjust Shortest Paths]
+    J --> K[Generate Path Combinations]
+    K --> L[Clean Duplicate Combinations]
+    L --> M[Deploy Ant Army]
+    M --> N[Print Movements]
+    N --> O[End]
+    
+    style A fill:#e1f5ff
+    style O fill:#e1f5ff
+    style D fill:#ffcccc
+    style H fill:#ffcccc
+```
+
 ## Installation
 
 1. Clone the repository:
@@ -133,3 +177,129 @@ L3-1
    ```bash
    go run . <input_file>
    ```
+
+## Architecture Diagrams
+
+### Graph Structure and Relationships
+
+```mermaid
+classDiagram
+    class Graph {
+        +Vertices []*Vertex
+        +AddVertex(key string) error
+        +GetVertex(key string) *Vertex
+        +AddEdge(from, to string) error
+        +RemoveEdge(from, to *Vertex)
+        +GetShortPath(start, end, source string) []string
+        +CheckShortestPaths() [][]string
+        +GetCombination() [][]string
+        +GetPathCombinations() map[int][][]string
+    }
+    
+    class Vertex {
+        +Key string
+        +Adjacent []*Vertex
+    }
+    
+    class Colony {
+        +Graph *Network
+        +Start string
+        +End string
+        +NumberOfAnts int
+    }
+    
+    class Ant {
+        +Id int
+        +PathIndex int
+        +Position int
+        +Finished bool
+    }
+    
+    Graph "1" --> "*" Vertex : contains
+    Vertex "*" --> "*" Vertex : adjacent to
+    Colony "1" --> "1" Graph : uses
+    Ant "*" --> "1" Colony : moves through
+```
+
+### Pathfinding Algorithm (BFS)
+
+```mermaid
+flowchart TD
+    A[GetShortPath: Start BFS] --> B[Initialize Queue with Start]
+    B --> C[Mark Start as Visited]
+    C --> D{Queue Empty?}
+    D -->|Yes| E[Return Error: No Path]
+    D -->|No| F[Dequeue Current Path]
+    F --> G[Get Last Node in Path]
+    G --> H{Node == End?}
+    H -->|Yes| I[Return Path]
+    H -->|No| J[Get Adjacent Vertices]
+    J --> K[For Each Neighbor]
+    K --> L{Is Source Room?}
+    L -->|Yes| M[Skip Neighbor]
+    L -->|No| N{Already Visited?}
+    N -->|Yes| M
+    N -->|No| O[Mark as Visited]
+    O --> P[Create New Path]
+    P --> Q[Add to Queue]
+    Q --> R{More Neighbors?}
+    R -->|Yes| K
+    R -->|No| D
+    
+    style A fill:#e1f5ff
+    style I fill:#ccffcc
+    style E fill:#ffcccc
+```
+
+### Ant Deployment Process
+
+```mermaid
+sequenceDiagram
+    participant Main
+    participant DeployAntArmy
+    participant CalculatePathLimits
+    participant DeployAntInCombination
+    participant Ant
+    
+    Main->>DeployAntArmy: pathCombinations, Colony
+    DeployAntArmy->>CalculatePathLimits: Calculate limits for each path
+    CalculatePathLimits-->>DeployAntArmy: pathLimits
+    DeployAntArmy->>DeployAntArmy: Find optimal combination
+    DeployAntArmy->>DeployAntArmy: Prepare paths (add start)
+    DeployAntArmy->>DeployAntInCombination: Deploy ants
+    
+    loop Until all ants finish
+        DeployAntInCombination->>Ant: Move ants already in paths
+        DeployAntInCombination->>Ant: Deploy new ants from start
+        Ant-->>DeployAntInCombination: Movement records
+    end
+    
+    DeployAntInCombination-->>DeployAntArmy: All movements
+    DeployAntArmy-->>Main: Optimal movements
+```
+
+### Path Combination Selection
+
+```mermaid
+flowchart TD
+    A[Get All Path Combinations] --> B[Calculate Path Limits for Each]
+    B --> C[Calculate Min Turns for Each]
+    C --> D[Initialize: First Combination as Best]
+    D --> E[For Each Combination]
+    E --> F{Same Min Turns as Current Best?}
+    F -->|Yes| G[Calculate Total Steps]
+    G --> H{Fewer Steps?}
+    H -->|Yes| I[Update Best Combination]
+    H -->|No| J[Keep Current Best]
+    F -->|No| K{Fewer Min Turns?}
+    K -->|Yes| L[Update Best Combination]
+    K -->|No| J
+    I --> M{More Combinations?}
+    J --> M
+    L --> M
+    M -->|Yes| E
+    M -->|No| N[Return Best Combination]
+    
+    style A fill:#e1f5ff
+    style N fill:#ccffcc
+```
