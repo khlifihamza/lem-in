@@ -87,7 +87,6 @@ func DeployAntArmy(pathCombinations map[int][][]string, Colony *Colony) [][]stri
 			index = i
 		}
 	}
-	//fmt.Println(pathLimits)
 	for i, path := range pathCombinations[index] {
 		newPath := []string{Colony.Start}
 		newPath = append(newPath, path...)
